@@ -15,8 +15,8 @@
                       <v-icon>mdi-delete</v-icon>
                      </v-btn>
                      <v-btn
-                       :icon="isFavorited ? 'mdi-heart' : 'mdi-heart-outline'"
-                       @click="toggleFavorite"
+                       :icon="joke.isFavorite ? 'mdi-heart' : 'mdi-heart-outline'"
+                       @click="toggleFavorite(joke)"
                        class="favorite-button">
                       </v-btn>
                    </v-card-actions>
@@ -38,6 +38,7 @@
 
 <script>
 import axios from 'axios';
+import { useJokesStore } from '../store'
 
 
 export default {
@@ -45,6 +46,7 @@ export default {
     return {
       jokes: [],
       isFavorite: false,
+      jokeStore: useJokesStore()
     };
   },
 
@@ -63,11 +65,12 @@ export default {
     clearJokes() {
       this.jokes = [];
     },
-    toogleFavorite(){
-      this.isFavorite = !this.isFavorite;
+    toggleFavorite(joke){
+      const index = this.jokes.findIndex(el => el.id === joke.id)
+      this.jokes[index].isFavorite = !joke.isFavorite;
+      this.jokeStore.addOrRemoveFavorite(joke)
+      console.log(this.jokeStore.favoriteJokes.length)
     }
-
   },
 };
 </script>
-
