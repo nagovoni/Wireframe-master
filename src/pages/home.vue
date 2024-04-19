@@ -2,9 +2,9 @@
 <template>
   <v-container>
     <v-card class="mx-auto" max-width="500" hover>
-      <v-card-text v-if="jokes.length > 0" >
+      <v-card-text v-if="jokeStore?.jokes?.length > 0" >
          <v-container>
-               <v-col v-for="joke in jokes" :key="joke.id" :cols="joke">
+               <v-col v-for="joke in jokeStore.jokes" :key="joke.id">
                  <v-card>
                    <v-card-text>
                     {{ joke.value }}
@@ -44,7 +44,6 @@ import { useJokesStore } from '../store'
 export default {
   data() {
     return {
-      jokes: [],
       isFavorite: false,
       jokeStore: useJokesStore()
     };
@@ -54,20 +53,18 @@ export default {
     async addJoke() {
       try {
         const res = await axios.get('https://api.chucknorris.io/jokes/random');
-        this.jokes.push(res.data);
+        this.jokeStore.addJoke(res.data);
       } catch (error) {
         console.log(error);
       }
     },
     deleteJoke(id) {
-      this.jokes = this.jokes.filter(j => j.id !== id);
+      this.jokeStore.removeJoke(id);
     },
-    clearJokes() {
-      this.jokes = [];
-    },
+
     toggleFavorite(joke){
-      const index = this.jokes.findIndex(el => el.id === joke.id)
-      this.jokes[index].isFavorite = !joke.isFavorite;
+      const index = this.jokeStore.jokes.findIndex(el => el.id === joke.id)
+      this.jokeStore.jokes[index].isFavorite = !joke.isFavorite;
       this.jokeStore.addOrRemoveFavorite(joke)
       console.log(this.jokeStore.favoriteJokes.length)
     }
