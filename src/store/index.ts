@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 export const useJokesStore = defineStore('jokes', {
-   // Propriedades reativas
+    // Propriedades reativas
     state: () => ({
       jokes: [
         {
@@ -29,6 +29,12 @@ export const useJokesStore = defineStore('jokes', {
       addJoke(joke){
         this.jokes.push(joke)
       },
+      getAllJokes() {
+        return this.jokes; // obter todas as piadas
+      },
+      clearJokes() {
+        this.jokes = []; // limpar todas as piadas
+      },
       removeJoke(id){
         this.jokes = [... this.jokes.filter(j => j !== id)]
       },
@@ -48,3 +54,9 @@ export const useJokesStore = defineStore('jokes', {
       }
     }
   })
+
+
+
+
+
+
