@@ -35,7 +35,6 @@ export default {
       routes: [
         { route: '/', name: 'Home', icon: "mdi-home" },
         { route: '/favorites', name: 'Favorites', icon: "mdi-star" },
-        { route: '/home/search', name: 'Search'}
       ],
     };
   },

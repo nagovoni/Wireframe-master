@@ -14,13 +14,6 @@ const routes = [
     path: '/',
     name: 'home',
     components: { default: () => import('../pages/home.vue') },
-    children:[
-      {
-       path: 'search',
-       name: 'search',
-       components: { default: () => import('../pages/search.vue') },
-      }
-     ]
    },
   {
     path: '/favorites',
