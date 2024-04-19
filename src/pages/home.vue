@@ -1,10 +1,11 @@
 
 <template>
   <v-container>
-    <v-card class="mx-auto" max-width="500" hover>
-      <v-card-text v-if="jokeStore?.jokes?.length > 0" >
+    <v-infinite-scroll height="600px" mode="manual" @load="load">
+      <v-card-text class="text-h5 py-2" v-if="jokeStore?.jokes?.length > 0" >
          <v-container>
-               <v-col v-for="joke in jokeStore.jokes" :key="joke.id">
+               <v-col class="mx-auto my-3" elevation="16" max-width="344" xs="12" sm="6" md="4" lg="3" xl="2"
+                v-for="joke in jokeStore.jokes" :key="joke.id">
                  <v-card>
                    <v-card-text>
                     {{ joke.value }}
@@ -27,12 +28,8 @@
       <v-card-text v-else>
          <v-alert>No jokes here!</v-alert>
       </v-card-text>
-    </v-card>
-    <v-card-text>
-        <div class="d-flex justify-center">
-          <v-btn style="background-color:#004D40;" @click="addJoke">Get a new Joke</v-btn>
-        </div>
-      </v-card-text>
+
+   </v-infinite-scroll>
   </v-container>
 </template>
 
@@ -50,19 +47,20 @@ export default {
   },
 
   methods: {
-    async addJoke() {
+    async load({ done }) {
       try {
         const res = await axios.get('https://api.chucknorris.io/jokes/random');
         this.jokeStore.addJoke(res.data);
+        done('ok');
       } catch (error) {
-        console.log(error);
+        console.error('Error fetching joke:', error);
       }
     },
     deleteJoke(id) {
       this.jokeStore.removeJoke(id);
     },
 
-    toggleFavorite(joke){
+     toggleFavorite(joke){
       const index = this.jokeStore.jokes.findIndex(el => el.id === joke.id)
       this.jokeStore.jokes[index].isFavorite = !joke.isFavorite;
       this.jokeStore.addOrRemoveFavorite(joke)
