@@ -1,11 +1,11 @@
 <template>
   <v-container>
-     <v-row>
-        <v-col>
-         <input v-model= "search" type="text" name="search" id="search">
-        </v-col>
-      </v-row>
-      <v-row>
+       <v-row>
+         <v-col>
+          <input v-model= "search" type="text" name="search" id="search" placeholder="Search for term">
+         </v-col>
+       </v-row>
+       <v-row>
         <v-col>
           <v-card class="mx-auto" max-width="500" hover>
             <v-card-text>
