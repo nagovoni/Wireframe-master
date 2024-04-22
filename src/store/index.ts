@@ -32,8 +32,8 @@ export const useJokesStore = defineStore('jokes', {
       removeJoke(id){
         this.jokes = [... this.jokes.filter(j => j !== id)]
       },
-      filterJokes(term: String){
-        const toFilter = [... this.jokes]
+      filterFavoriteJokes(term: String){
+        const toFilter = [... this.favoriteJokes]
         if (term){
           this.filteredJokes =toFilter.filter(j => j.value.includes(term))
         }
