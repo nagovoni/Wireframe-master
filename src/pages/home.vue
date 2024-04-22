@@ -74,37 +74,44 @@ export default {
 
   methods: {
 
-    async loadCategories() {
-      try {
-        const response = await axios.get('https://api.chucknorris.io/jokes/categories');
-        this.categories = response.data; // Preencha a matriz de categorias com os dados da API
-      } catch (error) {
-        console.error('Error fetching categories:', error);
-      }
-    },
+async loadCategories() {
+  try {
+    const response = await axios.get('https://api.chucknorris.io/jokes/categories');
+    this.categories = response.data; // Preencha a matriz de categorias com os dados da API
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+  }
+},
 
-    async load({ done }) {
-      try {
-        const res = await axios.get('https://api.chucknorris.io/jokes/random');
-        this.jokeStore.addJoke(res.data);
-        done('ok');
-      } catch (error) {
-        console.error('Error fetching joke:', error);
-      }
-    },
-    deleteJoke(id) {
-      this.jokeStore.removeJoke(id);
-    },
+async load({ done }) {
+  try {
+    let apiUrl = 'https://api.chucknorris.io/jokes/random';
+    if (this.selectedCategory) {
+      apiUrl += `?category=${this.selectedCategory}`;
+    }
+    const res = await axios.get(apiUrl);
+    this.jokeStore.addJoke(res.data);
+    done('ok');
+  } catch (error) {
+    console.error('Error fetching joke:', error);
+  }
+},
+deleteJoke(id) {
+  this.jokeStore.removeJoke(id);
+},
 
-     toggleFavorite(joke){
-      const index = this.jokeStore.jokes.findIndex(el => el.id === joke.id)
-      this.jokeStore.jokes[index].isFavorite = !joke.isFavorite;
-      this.jokeStore.addOrRemoveFavorite(joke)
-      console.log(this.jokeStore.favoriteJokes.length)
-    },
-    toggleCategory(category) {
-      this.selectedCategory = category
-    },
-  },
+toggleFavorite(joke){
+  const index = this.jokeStore.jokes.findIndex(el => el.id === joke.id)
+  this.jokeStore.jokes[index].isFavorite = !joke.isFavorite;
+  this.jokeStore.addOrRemoveFavorite(joke)
+  console.log(this.jokeStore.favoriteJokes.length)
+},
+toggleCategory(category) {
+  this.selectedCategory = category;
+  // Quando a categoria é alterada, recarregue as piadas
+  this.jokeStore.clearJokes(); // Limpa as piadas atuais
+  this.load({ done: () => {} }); // Carrega piadas com base na nova categoria
+},
+},
 };
 </script>
