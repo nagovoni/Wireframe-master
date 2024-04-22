@@ -28,9 +28,29 @@
       <v-card-text v-else>
          <v-alert>No jokes here!</v-alert>
       </v-card-text>
-
    </v-infinite-scroll>
+
   </v-container>
+  <div class="text-center">
+    <v-menu
+      open-on-hover
+    >
+      <template v-slot:activator="{ props }">
+        <v-btn
+          color="primary"
+          v-bind="props"
+        >
+        +
+        </v-btn>
+      </template>
+
+      <v-list>
+          <v-list-item v-for="category in categories" :key="category" @click="toggleCategory(category)">
+            {{ category }}
+          </v-list-item>
+      </v-list>
+    </v-menu>
+  </div>
 </template>
 
 <script>
@@ -42,11 +62,27 @@ export default {
   data() {
     return {
       isFavorite: false,
-      jokeStore: useJokesStore()
+      jokeStore: useJokesStore(),
+      selectedCategory: '',
+      categories: [],
     };
+  },
+  async created() {
+    // Carregar categorias ao inicializar o componente
+    await this.loadCategories();
   },
 
   methods: {
+
+    async loadCategories() {
+      try {
+        const response = await axios.get('https://api.chucknorris.io/jokes/categories');
+        this.categories = response.data; // Preencha a matriz de categorias com os dados da API
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    },
+
     async load({ done }) {
       try {
         const res = await axios.get('https://api.chucknorris.io/jokes/random');
@@ -65,7 +101,10 @@ export default {
       this.jokeStore.jokes[index].isFavorite = !joke.isFavorite;
       this.jokeStore.addOrRemoveFavorite(joke)
       console.log(this.jokeStore.favoriteJokes.length)
-    }
+    },
+    toggleCategory(category) {
+      this.selectedCategory = category
+    },
   },
 };
 </script>

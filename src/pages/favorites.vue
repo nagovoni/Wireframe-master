@@ -22,17 +22,20 @@
          </v-card>
         </v-col>
       </v-row>
+
+
   </v-container>
 </template>
 
 <script>
-import {  computed, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useJokesStore } from '../store';
 export default {
   setup() {
     const favoriteJokesStore = useJokesStore(); // crio uma instância da useJokesStore, para acessar a Store
     const favorites = ref (favoriteJokesStore.favoriteJokes);
     const search = ref (''); //deixa a variável reativa
+
     const filteredJokes = (computed (() => { //??????
       if(search.value){
         return favorites.value.filter(j => j.value.includes(search.value))
@@ -42,8 +45,8 @@ export default {
 
     return {
       search,
-      filteredJokes
+      filteredJokes,
     };
-  },
+  }
  }
 </script>
