@@ -45,13 +45,16 @@ export default {
   data() {
     return {
       favoriteJokesStore: useJokesStore(),
-      favorites: [],
       search: '',
       selectedCategory: '',
       categories: [],
     };
   },
   computed: {
+
+    favorites() {
+      return this.favoriteJokesStore.favoriteJokes;
+    },
     filteredJokes() {
       if (this.search) {
         return this.favorites.filter(joke => joke.includes(this.search));
@@ -73,29 +76,25 @@ export default {
     },
     async load({ done }) {
       try {
-        let apiUrl = 'https://api.chucknorris.io/jokes/random';
-        if (this.selectedCategory) {
-          apiUrl += `?category=${this.selectedCategory}`;
-        }
-        const res = await axios.get(apiUrl);
-        this.jokeStore.addJoke(res.data);
+        const res = await axios.get('https://api.chucknorris.io/jokes/random');
+        this.favoriteJokesStore.addJoke(res.data);
         done('ok');
       } catch (error) {
         console.error('Error fetching joke:', error);
       }
     },
     deleteJoke(id) {
-      this.jokeStore.removeJoke(id);
+      this.favoriteJokesStore.removeJoke(id);
     },
     toggleFavorite(joke) {
-      const index = this.jokeStore.jokes.findIndex(el => el.id === joke.id);
-      this.jokeStore.jokes[index].isFavorite = !joke.isFavorite;
-      this.jokeStore.addOrRemoveFavorite(joke);
-      console.log(this.jokeStore.favoriteJokes.length);
+      const index = this.favoriteJokesStore.favoriteJokes.findIndex(el => el.id === joke.id);
+      this.favoriteJokesStore.favoriteJokes[index].isFavorite = !joke.isFavorite;
+      this.favoriteJokesStore.addOrRemoveFavorite(joke);
+      console.log(this.favoriteJokesStore.favoriteJokes.length);
     },
-    toggleCategory(category) {
+    ttoggleCategory(category) {
       this.selectedCategory = category;
-      this.jokeStore.clearJokes();
+      this.favoriteJokesStore.clearJokes();
       this.load({ done: () => {} });
     },
   },
