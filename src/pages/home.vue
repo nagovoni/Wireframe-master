@@ -29,7 +29,6 @@
          <v-alert>No jokes here!</v-alert>
       </v-card-text>
    </v-infinite-scroll>
-
   </v-container>
   <div class="text-center">
     <v-menu
@@ -37,8 +36,11 @@
     >
       <template v-slot:activator="{ props }">
         <v-btn
+          rounded="sm"
           color="primary"
           v-bind="props"
+          density="compact"
+          icon="mdi-plus"
         >
         +
         </v-btn>
@@ -74,7 +76,7 @@ export default {
 
   methods: {
 
-async loadCategories() {
+  async loadCategories() {
   try {
     const response = await axios.get('https://api.chucknorris.io/jokes/categories');
     this.categories = response.data; // Preencha a matriz de categorias com os dados da API

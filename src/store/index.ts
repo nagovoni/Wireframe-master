@@ -45,8 +45,11 @@ export const useJokesStore = defineStore('jokes', {
         } else {
           this.favoriteJokes.push(joke)
         }
-      }
-    }
+      },
+      clearJokes(state) {
+        state.jokes = [];
+    },
+  }
   })
 
 
