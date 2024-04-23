@@ -38,76 +38,67 @@
 </template>
 
 <script>
-import { computed, ref, onMounted} from 'vue';
+import axios from 'axios';
 import { useJokesStore } from '../store';
+
 export default {
-  setup() {
-    const favoriteJokesStore = useJokesStore(); // crio uma instância da useJokesStore, para acessar a Store
-    const favorites = ref (favoriteJokesStore.favoriteJokes);
-    const search = ref (''); //deixa a variável reativa
-    const selectedCategory= ref ('');
-    const categories=ref([]);
-
-    const loadCategories = async () => {
-      try {
-      const response = await axios.get('https://api.chucknorris.io/jokes/categories');
-      categories.value = response.data; // Preencha a matriz de categorias com os dados da API
-      } catch (error) {
-       console.error('Error fetching categories:', error);
-      }
+  data() {
+    return {
+      favoriteJokesStore: useJokesStore(),
+      favorites: [],
+      search: '',
+      selectedCategory: '',
+      categories: [],
     };
-
-    onMounted(async () => {
-      // Carregar categorias ao inicializar o componente
-      await loadCategories();
-    });
-
-    const load = async ({ done }) => {
+  },
+  computed: {
+    filteredJokes() {
+      if (this.search) {
+        return this.favorites.filter(joke => joke.includes(this.search));
+      }
+      return this.favorites;
+    },
+  },
+  mounted() {
+    this.loadCategories();
+  },
+  methods: {
+    async loadCategories() {
+      try {
+        const response = await axios.get('https://api.chucknorris.io/jokes/categories');
+        this.categories = response.data;
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    },
+    async load({ done }) {
       try {
         let apiUrl = 'https://api.chucknorris.io/jokes/random';
-        if (selectedCategory.value) {
-          apiUrl += `?category=${selectedCategory.value}`;
+        if (this.selectedCategory) {
+          apiUrl += `?category=${this.selectedCategory}`;
         }
         const res = await axios.get(apiUrl);
-        jokeStore.addJoke(res.data);
+        this.jokeStore.addJoke(res.data);
         done('ok');
       } catch (error) {
         console.error('Error fetching joke:', error);
       }
-    };
-
-    const deleteJoke = (id) => {
-      jokeStore.removeJoke(id);
-    };
-
-    const toggleFavorite = (joke) => {
-      const index = jokeStore.jokes.findIndex((el) => el.id === joke.id);
-      jokeStore.jokes[index].isFavorite = !joke.isFavorite;
-      jokeStore.addOrRemoveFavorite(joke);
-      console.log(jokeStore.favoriteJokes.length);
-    };
-    const filteredJokes = (computed (() => { //??????
-      if(search.value){
-        return favorites.value.filter(j => j.value.includes(search.value))
-      }
-      return favorites.value
-    }))
-    const toggleCategory = (category) => {
-      selectedCategory.value = category;
-      // Quando a categoria é alterada, recarregue as piadas
-      jokeStore.clearJokes(); // Limpa as piadas atuais
-      load({ done: () => {} }); // Carrega piadas com base na nova categoria
-    };
-
-    return {
-      search,
-      selectedCategory,
-      load,
-      deleteJoke,
-      toggleFavorite,
-      toggleCategory,
-      filteredJokes,
-    };
+    },
+    deleteJoke(id) {
+      this.jokeStore.removeJoke(id);
+    },
+    toggleFavorite(joke) {
+      const index = this.jokeStore.jokes.findIndex(el => el.id === joke.id);
+      this.jokeStore.jokes[index].isFavorite = !joke.isFavorite;
+      this.jokeStore.addOrRemoveFavorite(joke);
+      console.log(this.jokeStore.favoriteJokes.length);
+    },
+    toggleCategory(category) {
+      this.selectedCategory = category;
+      this.jokeStore.clearJokes();
+      this.load({ done: () => {} });
+    },
   },
 };
 </script>
+
