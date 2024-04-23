@@ -11,10 +11,6 @@
                     {{ joke.value }}
                    </v-card-text>
                    <v-card-actions>
-                     <v-spacer></v-spacer>
-                     <v-btn icon small color="red" @click="deleteJoke(joke.id)">
-                      <v-icon>mdi-delete</v-icon>
-                     </v-btn>
                      <v-btn
                        :icon="joke.isFavorite ? 'mdi-heart' : 'mdi-heart-outline'"
                        @click="toggleFavorite(joke)"
@@ -28,91 +24,45 @@
       <v-card-text v-else>
          <v-alert>No jokes here!</v-alert>
       </v-card-text>
-   </v-infinite-scroll>
+    </v-infinite-scroll>
   </v-container>
-  <div class="text-center">
-    <v-menu
-      open-on-hover
-    >
-      <template v-slot:activator="{ props }">
-        <v-btn
-          rounded="xl"
-          color="primary"
-          v-bind="props"
-          density="compact"
-          icon="mdi-plus"
-        >
-        </v-btn>
-      </template>
-
-      <v-list>
-          <v-list-item v-for="category in categories" :key="category" @click="toggleCategory(category)">
-            {{ category }}
-          </v-list-item>
-      </v-list>
-    </v-menu>
-  </div>
 </template>
 
 <script>
-import axios from 'axios';
-import { useJokesStore } from '../store'
+ import axios from 'axios';
+ import { useJokesStore } from '../store'
 
 
-export default {
+ export default {
   data() {
     return {
+      jokes: [],
       isFavorite: false,
       jokeStore: useJokesStore(),
-      selectedCategory: '',
-      categories: [],
     };
-  },
-  async created() {
-    // Carregar categorias ao inicializar o componente
-    await this.loadCategories();
   },
 
   methods: {
 
-  async loadCategories() {
-  try {
-    const response = await axios.get('https://api.chucknorris.io/jokes/categories');
-    this.categories = response.data; // Preencha a matriz de categorias com os dados da API
-  } catch (error) {
-    console.error('Error fetching categories:', error);
-  }
-},
+   async load({ done }) {
+     try{
+      const res = await axios.get('https://api.chucknorris.io/jokes/random');
+      this.jokeStore.addJoke(res.data);
+      done('ok');
+     } catch (error) {
+      console.error('Error fetching joke:', error);
+     }
+   },
+   deleteJoke(id) {
+    this.jokeStore.removeJoke(id);
+   },
 
-async load({ done }) {
-  try {
-    let apiUrl = 'https://api.chucknorris.io/jokes/random';
-    if (this.selectedCategory) {
-      apiUrl += `?category=${this.selectedCategory}`;
+   toggleFavorite(joke){
+      const index = this.jokeStore.jokes.findIndex(el => el.id === joke.id)
+      this.jokeStore.jokes[index].isFavorite = !joke.isFavorite;
+      this.jokeStore.addOrRemoveFavorite(joke)
+      console.log(this.jokeStore.favoriteJokes.length)
     }
-    const res = await axios.get(apiUrl);
-    this.jokeStore.addJoke(res.data);
-    done('ok');
-  } catch (error) {
-    console.error('Error fetching joke:', error);
-  }
-},
-deleteJoke(id) {
-  this.jokeStore.removeJoke(id);
-},
-
-toggleFavorite(joke){
-  const index = this.jokeStore.jokes.findIndex(el => el.id === joke.id)
-  this.jokeStore.jokes[index].isFavorite = !joke.isFavorite;
-  this.jokeStore.addOrRemoveFavorite(joke)
-  console.log(this.jokeStore.favoriteJokes.length)
-},
-toggleCategory(category) {
-  this.selectedCategory = category;
-  // Quando a categoria é alterada, recarregue as piadas
-  this.jokeStore.clearJokes(); // Limpa as piadas atuais
-  this.load({ done: () => {} }); // Carrega piadas com base na nova categoria
-},
-},
-};
+   },
+  };
 </script>
