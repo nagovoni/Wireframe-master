@@ -36,13 +36,12 @@
     >
       <template v-slot:activator="{ props }">
         <v-btn
-          rounded="sm"
+          rounded="xl"
           color="primary"
           v-bind="props"
           density="compact"
           icon="mdi-plus"
         >
-        +
         </v-btn>
       </template>
 
