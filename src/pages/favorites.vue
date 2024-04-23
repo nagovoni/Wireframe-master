@@ -57,7 +57,7 @@ export default {
     },
     filteredJokes() {
       if (this.search) {
-        return this.favorites.filter(joke => joke.includes(this.search));
+        return this.favorites.filter(joke => joke.value.includes(this.search));
       }
       return this.favorites;
     },
