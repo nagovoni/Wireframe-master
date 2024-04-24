@@ -1,39 +1,42 @@
 <template>
   <v-container>
-       <v-row>
-         <v-col>
-          <input v-model= "search" type="text" name="search" id="search" placeholder="Search for term">
-         </v-col>
-       </v-row>
-       <v-row>
-        <v-col>
-          <v-card class="mx-auto" max-width="500" hover>
-            <v-card-text>
-              <v-container>
-                <v-col v-for="(joke, index) in filteredJokes" :key="index">
-                  <v-card>
-                    <v-card-text>
-                     {{ joke.value }}
-                    </v-card-text>
-                  </v-card>
-                </v-col>
-             </v-container>
-           </v-card-text>
-         </v-card>
-        </v-col>
-      </v-row>
-      <div class="text-center">
-         <v-menu open-on-hover>
-           <template v-slot:activator="{ props }">
-              <v-btn rounded="xl" color="primary" v-bind="props" density="compact" icon="mdi-plus"/>
-           </template>
-           <v-list>
-              <v-list-item v-for="category in categories" :key="category" @click="toggleCategory(category)">
-                {{ category }}
-              </v-list-item>
-           </v-list>
-         </v-menu>
-      </div>
+    <v-row>
+      <v-col cols="12">
+        <input v-model="search" type="text" name="search" id="search" placeholder="Search for term">
+      </v-col>
+      <v-col cols="12">
+        {{`Category: ${selectedCategory ? selectedCategory : 'All'}`}}
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-card class="mx-auto" max-width="500" hover>
+          <v-card-text>
+            <v-container>
+              <v-col v-for="(joke, index) in filteredJokes" :key="index">
+                <v-card>
+                  <v-card-text>
+                    {{ joke.value }}
+                  </v-card-text>
+                </v-card>
+              </v-col>
+            </v-container>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+    <div class="text-center">
+      <v-menu open-on-hover>
+        <template v-slot:activator="{ props }">
+          <v-btn rounded="xl" color="primary" v-bind="props" density="compact" icon="mdi-plus"/>
+        </template>
+        <v-list>
+          <v-list-item v-for="(category, index) in categories" :key="index" @click="selectedCategory = category">
+            {{ category }}
+          </v-list-item>
+        </v-list>
+      </v-menu>
+    </div>
   </v-container>
 </template>
 
@@ -51,16 +54,24 @@ export default {
     };
   },
   computed: {
-
     favorites() {
       return this.favoriteJokesStore.favoriteJokes;
     },
+
     filteredJokes() {
-      if (this.search) {
-        return this.favorites.filter(joke => joke.value.includes(this.search));
+      let jokes= [...this.favorites]
+
+      if (this.selectedCategory) {
+        jokes = [...this.favorites.filter(joke => joke.categories.includes(this.selectedCategory))]
       }
-      return this.favorites;
-    },
+
+      if (this.search) {
+        // Existing search filter logic
+        return this.jokes.filter(joke => joke.value.includes(this.search));
+      }
+      // Show all favorites if no search or category is selected
+         return jokes;
+    }
   },
   mounted() {
     this.loadCategories();
@@ -90,14 +101,10 @@ export default {
       const index = this.favoriteJokesStore.favoriteJokes.findIndex(el => el.id === joke.id);
       this.favoriteJokesStore.favoriteJokes[index].isFavorite = !joke.isFavorite;
       this.favoriteJokesStore.addOrRemoveFavorite(joke);
-      console.log(this.favoriteJokesStore.favoriteJokes.length);
     },
-    ttoggleCategory(category) {
+    toggleCategory(category) {
       this.selectedCategory = category;
-      this.favoriteJokesStore.clearJokes();
-      this.load({ done: () => {} });
-    },
-  },
-};
+    }
+  }
+}
 </script>
-
