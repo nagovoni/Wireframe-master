@@ -1,11 +1,11 @@
 <template>
-  <v-container>
+  <v-container d-flex>
     <v-row>
-      <v-col cols="12">
-        <input v-model="search" type="text" name="search" id="search" placeholder="Search for term">
+      <v-col cols="12" class="d-flex justify-center">
+        <input v-model="search" type="text" name="search" id="search" placeholder="Search for term" >
       </v-col>
-      <v-col cols="12">
-        {{`Category: ${selectedCategory ? selectedCategory : 'All'}`}}
+      <v-col cols="12" class="d-flex justify-center">
+        {{`Category: ${selectedCategory}`}}
       </v-col>
     </v-row>
     <v-row>
@@ -25,21 +25,22 @@
         </v-card>
       </v-col>
     </v-row>
-    <v-speed-dial
-       location="bottom center"
-       transition="fade-transition"
-    >
-      <template v-slot:activator="{ props: activatorProps }">
-      <v-fab
-        v-bind="activatorProps"
-        size="large"
-        icon="$vuetify"
-      ></v-fab>
-      </template>
-
-      <v-btn v-for="(category, index) in categories" :key="index" @click="selectedCategory = category">
-        {{ category }}
+    <v-speed-dial location="bottom center" transition="fade-transition">
+      <v-btn
+        v-for="(category, index) in categories"
+        :key="index"
+        @click="selectedCategory = category"
+        :color="selectedCategory == category ? 'primary' : ''">
+          {{ category }}
       </v-btn>
+      <template v-slot:activator="{ props: activatorProps }">
+        <v-fab
+          v-bind="activatorProps"
+          size="large"
+          icon="$vuetify"
+          class="custom-fab"
+        ></v-fab>
+      </template>
    </v-speed-dial>
  </v-container>
 </template>
@@ -53,7 +54,7 @@ export default {
     return {
       favoriteJokesStore: useJokesStore(),
       search: '',
-      selectedCategory: '',
+      selectedCategory: 'All',
       categories: [],
     };
   },
@@ -65,7 +66,7 @@ export default {
     filteredJokes() {
       let jokes= [...this.favorites]
 
-      if (this.selectedCategory) {
+      if (this.selectedCategory !== 'All') {
         jokes = [...this.favorites.filter(joke => joke.categories.includes(this.selectedCategory))]
       }
 
@@ -84,7 +85,7 @@ export default {
     async loadCategories() {
       try {
         const response = await axios.get('https://api.chucknorris.io/jokes/categories');
-        this.categories = response.data;
+        this.categories = ['All', ...response.data];
       } catch (error) {
         console.error('Error fetching categories:', error);
       }
@@ -112,3 +113,11 @@ export default {
   }
 }
 </script>
+
+<style>
+.custom-fab{
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+}
+</style>
