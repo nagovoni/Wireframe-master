@@ -25,19 +25,23 @@
         </v-card>
       </v-col>
     </v-row>
-    <div class="text-center">
-      <v-menu open-on-hover>
-        <template v-slot:activator="{ props }">
-          <v-btn rounded="xl" color="primary" v-bind="props" density="compact" icon="mdi-plus"/>
-        </template>
-        <v-list>
-          <v-list-item v-for="(category, index) in categories" :key="index" @click="selectedCategory = category">
-            {{ category }}
-          </v-list-item>
-        </v-list>
-      </v-menu>
-    </div>
-  </v-container>
+    <v-speed-dial
+       location="bottom center"
+       transition="fade-transition"
+    >
+      <template v-slot:activator="{ props: activatorProps }">
+      <v-fab
+        v-bind="activatorProps"
+        size="large"
+        icon="$vuetify"
+      ></v-fab>
+      </template>
+
+      <v-btn v-for="(category, index) in categories" :key="index" @click="selectedCategory = category">
+        {{ category }}
+      </v-btn>
+   </v-speed-dial>
+ </v-container>
 </template>
 
 <script>
