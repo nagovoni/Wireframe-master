@@ -10,6 +10,7 @@ import 'vuetify/styles'
 import { VSpeedDial } from 'vuetify/labs/VSpeedDial'
 import { VFab } from 'vuetify/labs/VFab'
 
+
 // Composables
 import { createVuetify } from 'vuetify'
 
@@ -17,7 +18,7 @@ import { createVuetify } from 'vuetify'
 export default createVuetify({
   components: {
     VSpeedDial,
-    VFab
+    VFab,
   },
   theme: {
     //defaultTheme: 'dark',

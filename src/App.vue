@@ -1,6 +1,6 @@
 <template>
   <v-app id="inspire">
-    <v-app-bar>
+    <v-app-bar color="deep-purple-accent-2">
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
       <v-app-bar-title>Chuck Norris Jokes</v-app-bar-title>
     </v-app-bar>
@@ -17,7 +17,7 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-main class="bg-grey-lighten-2">
+    <v-main class="bg-blue">
       <v-container>
         <v-row>
           <router-view />

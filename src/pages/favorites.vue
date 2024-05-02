@@ -1,8 +1,8 @@
 <template>
-  <v-container d-flex>
-    <v-row>
-      <v-col cols="12" class="d-flex justify-center">
-        <input v-model="search" type="text" name="search" id="search" placeholder="Search for term" >
+  <v-container d-flex color="bg-blue">
+    <v-row justify="center">
+      <v-col cols="12" sm="3" md="4" lg="3" xxl="2">
+        <input v-model="search" type="text" name="search" id="search" placeholder="Search for term">
       </v-col>
       <v-col cols="12" class="d-flex justify-center">
         {{`Category: ${selectedCategory}`}}
@@ -11,10 +11,10 @@
     <v-row>
       <v-col>
         <v-card class="mx-auto" max-width="500" hover>
-          <v-card-text>
+          <v-card-text >
             <v-container>
               <v-col v-for="(joke, index) in filteredJokes" :key="index">
-                <v-card>
+                <v-card class="bg-pink-accent-2">
                   <v-card-text>
                     {{ joke.value }}
                   </v-card-text>
@@ -37,7 +37,7 @@
         <v-fab
           v-bind="activatorProps"
           size="large"
-          icon="$vuetify"
+          icon="mdi-plus"
           class="custom-fab"
         ></v-fab>
       </template>
@@ -72,7 +72,7 @@ export default {
 
       if (this.search) {
         // Existing search filter logic
-        return this.jokes.filter(joke => joke.value.includes(this.search));
+        return jokes.filter(joke => joke.value.includes(this.search));
       }
       // Show all favorites if no search or category is selected
          return jokes;

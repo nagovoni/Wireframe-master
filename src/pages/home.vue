@@ -6,7 +6,8 @@
          <v-container>
                <v-col class="mx-auto my-3" elevation="16" max-width="344" xs="12" sm="6" md="4" lg="3" xl="2"
                 v-for="joke in jokeStore.jokes" :key="joke.id">
-                 <v-card>
+                 <v-card class=".back">
+
                    <v-card-text>
                     {{ joke.value }}
                    </v-card-text>
@@ -31,6 +32,7 @@
 <script>
  import axios from 'axios';
  import { useJokesStore } from '../store'
+
 
 
  export default {
@@ -66,3 +68,10 @@
    },
   };
 </script>
+<style>
+.v-card {
+  background-image: url('https://assets.dragoart.com/images/10610_501/how-to-draw-chuck-norris-chuck-norris_5e4c97d5e44d82.08617054_46254_3_4.jpg'); /* Replace with your image URL */
+  background-size: cover; /* Optional: Set background size (cover, contain, etc.) */
+  background-position: center; /* Optional: Set background position (center, top left, etc.) */
+}
+</style>
