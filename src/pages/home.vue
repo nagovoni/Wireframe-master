@@ -6,7 +6,14 @@
          <v-container>
                <v-col class="mx-auto my-3" elevation="16" max-width="344" xs="12" sm="10" offset-sm1
                 v-for="joke in jokeStore.jokes" :key="joke.id">
-                 <v-card class=".back">
+                 <v-card>
+                  <v-img
+                   color="surface-variant"
+                   height="250"
+                   src="https://miro.medium.com/v2/resize:fit:720/format:webp/1*UpbyOhG9ydJ4aI_yiRRVGw.png"
+                   cover
+                  >
+                  </v-img>
 
                    <v-card-text>
                     {{ joke.value }}

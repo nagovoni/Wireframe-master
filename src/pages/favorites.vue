@@ -23,7 +23,13 @@
           <v-card-text >
             <v-container>
               <v-col v-for="(joke, index) in filteredJokes" :key="index">
-                <v-card class="bg-pink-accent-2">
+                <v-card>
+                  <v-img
+                   color="surface-variant"
+                   height="250"
+                   src="https://cdn.dribbble.com/users/1774513/screenshots/3726127/media/ef86424ae75426acfa624dfadcabda14.jpg?resize=400x300&vertical=center"
+                   cover
+                  ></v-img>
                   <v-card-text>
                     {{ joke.value }}
                   </v-card-text>
