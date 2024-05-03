@@ -1,16 +1,25 @@
 <template>
   <v-container d-flex color="bg-blue">
-    <v-row justify="center">
-      <v-col cols="12" sm="3" md="4" lg="3" xxl="2">
-        <input v-model="search" type="text" name="search" id="search" placeholder="Search for term">
-      </v-col>
+    <v-row>
       <v-col cols="12" class="d-flex justify-center">
+
+          <v-text-field
+             label="Search for a term"
+             color="primary"
+             v-model="search"
+             type="text"
+             me="search"
+             id="search"
+          >
+         </v-text-field>
+      </v-col>
+      <v-col class="d-flex justify-center">
         {{`Category: ${selectedCategory}`}}
       </v-col>
     </v-row>
     <v-row>
-      <v-col>
-        <v-card class="mx-auto" max-width="500" hover>
+      <v-col class="mx-auto my-3" elevation="16" max-width="344" xs="12" sm="8" offset-sm1>
+        <v-card >
           <v-card-text >
             <v-container>
               <v-col v-for="(joke, index) in filteredJokes" :key="index">
